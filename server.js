@@ -62,6 +62,10 @@ mongo.connect(process.env.DATABASE, { useNewUrlParser: true }, (err, conn) => {
       currentUsers++
       io.emit('user', { name: socket.request.user.name, currentUsers, connected: true })
 
+      socket.on('chat message', (message) => {
+        io.emit('chat message', { name: socket.request.user.name, message });
+      });
+
       socket.on('disconnect', () => { 
         console.log('A user has disconnected')
         currentUsers--
