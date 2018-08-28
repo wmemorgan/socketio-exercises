@@ -40,7 +40,7 @@ io.use(passportSocketIo.authorize({
   key: 'express.sid',
   secret: process.env.SESSION_SECRET,
   store: sessionStore
-}));
+}))
 
 
 mongo.connect(process.env.DATABASE, { useNewUrlParser: true }, (err, conn) => {
@@ -60,12 +60,12 @@ mongo.connect(process.env.DATABASE, { useNewUrlParser: true }, (err, conn) => {
     io.on('connection', socket => {
       console.log('user ' + socket.request.user.name + ' connected')
       currentUsers++
-      io.emit('user count', currentUsers)
+      io.emit('user', { name: socket.request.user.name, currentUsers, connected: true })
 
       socket.on('disconnect', () => { 
         console.log('A user has disconnected')
         currentUsers--
-        io.emit('user count', currentUsers)
+        io.emit('user', { name: socket.request.user.name, currentUsers, connected: false })
       })
     })
   
