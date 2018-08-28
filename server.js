@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').load();
 
 const express     = require('express');
 const session     = require('express-session');
@@ -13,6 +14,8 @@ const app         = express();
 const http        = require('http').Server(app);
 const sessionStore= new session.MemoryStore();
 
+const io = require('socket.io')(http)
+
 
 fccTesting(app); //For FCC testing purposes
 
@@ -21,6 +24,8 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'pug')
+
+console.log(`Database is: ${process.env.DATABASE}`)
 
 app.use(session({
   secret: process.env.SESSION_SECRET,
@@ -31,7 +36,8 @@ app.use(session({
 }));
 
 
-mongo.connect(process.env.DATABASE, (err, db) => {
+mongo.connect(process.env.DATABASE, { useNewUrlParser: true }, (err, conn) => {
+  const db = conn.db("wme-practicedb")
     if(err) console.log('Database error: ' + err);
   
     auth(app, db);
@@ -41,7 +47,9 @@ mongo.connect(process.env.DATABASE, (err, db) => {
 
   
     //start socket.io code  
-
+    io.on('connection', socket => {
+      console.log('A user has connected')
+    })
   
 
     //end socket.io code
