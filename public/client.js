@@ -3,8 +3,12 @@ $( document ).ready(function() {
   /*global io*/
   var socket=io()
  
-  socket.on('user count', function (data) {
-    console.log(data)
+  // Form submittion with new message in field with id 'm'
+  $('form').submit(function () {
+    var messageToSend = $('#m').val();
+    socket.emit('chat message', messageToSend);
+    $('#m').val('');
+    return false; // prevent form submit from refreshing page
   });
 
   socket.on('user', function (data) {
@@ -17,16 +21,9 @@ $( document ).ready(function() {
     }
     $('#messages').append($('<li>').html('<b>' + message + '<\/b>'));
   });
- 
 
-  // Form submittion with new message in field with id 'm'
-  $('form').submit(function(){
-    var messageToSend = $('#m').val();
-    //send message to server here?
-    $('#m').val('');
-    return false; // prevent form submit from refreshing page
+  socket.on('chat message', function (data) {
+    $('#messages').append($('<li>').text(data.name + ': ' + data.message));
   });
-  
-  
   
 });
