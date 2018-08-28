@@ -58,7 +58,7 @@ mongo.connect(process.env.DATABASE, { useNewUrlParser: true }, (err, conn) => {
         console.log('A user has disconnected')
         currentUsers--
         io.emit('user count', currentUsers)
-      });
+      })
     })
   
 
