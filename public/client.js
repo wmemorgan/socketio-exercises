@@ -8,18 +8,14 @@ $( document ).ready(function() {
   });
 
   socket.on('user', function (data) {
-    document.getElementById('num-users').innerText = data.currentUsers + ' users online'
+    $('#num-users').text(data.currentUsers + ' users online');
     var message = data.name;
     if (data.connected) {
       message += ' has joined the chat.';
     } else {
       message += ' has left the chat.';
     }
-    var ul = document.getElementById("messages");
-    var li = document.createElement("li");
-    li.appendChild(document.createTextNode(message));
-    li.setAttribute("style", "font-weight:bold"); // added line
-    ul.appendChild(li);
+    $('#messages').append($('<li>').html('<b>' + message + '<\/b>'));
   });
  
 
